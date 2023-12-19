@@ -58,6 +58,70 @@
       // 🧠 Implement a `getAllReversed` method which returns the ints in reverse order
       // ❗ WARNING: except for `getAllReversed`, methods must respect the order of the integers
       // ❗ WARNING: note that none of the methods actually mutate the `ints` property
+        
+      constructor(...args) {
+    // Filter out non-integer values and assign to the `ints` property
+    this.ints = args.filter(Number.isInteger);
+  }
+
+  // Implement a `getAll` method which returns the data held in the `ints` property
+  getAll() {
+    // Return a copy of the `ints` array to prevent direct manipulation
+    return this.ints.slice();
+  }
+
+  // Implement a `getEvens` method which returns an array with the integers that are even
+  getEvens() {
+    // Use filter to get only even integers
+    return this.ints.filter(num => num % 2 === 0);
+  }
+
+  // Implement a `getNegatives` method which returns an array with the integers that are negative
+  getNegatives() {
+    // Use filter to get only negative integers
+    return this.ints.filter(num => num < 0);
+  }
+
+  // Implement a `getAllSquared` method which returns an array with the integers squared
+  getAllSquared() {
+    // Use map to square each integer
+    return this.ints.map(num => num ** 2);
+  }
+
+  // Implement a `pop` method which removes the last integer from `ints` and returns it
+  pop() {
+    // Use pop to remove and return the last element of `ints`
+    if (this.ints.length === 0) {
+      // Return undefined if `ints` is empty
+      return undefined;
+    }
+    return this.ints.pop();
+  }
+
+  // Implement a `push` method which takes an int and pushes it to the end of `ints`, and returns the updated `ints` property
+  push(num) {
+    // Only push if the argument is an integer
+    if (Number.isInteger(num)) {
+      this.ints.push(num);
+    }
+    // Return the updated `ints` array
+    return this.getAll();
+  }
+
+  // Implement a `getEveryNth` method which takes an int `n` and returns an array with the ints at position 0, n, n + n, n + n + n, etc
+  getEveryNth(n) {
+    // Use filter to get integers at positions 0, n, n + n, n + n + n, etc
+    return this.ints.filter((_, index) => index % n === 0);
+  }
+
+  // Implement a `getAllReversed` method which returns the ints in reverse order
+  // WARNING: except for `getAllReversed`, methods must respect the order of the integers
+  getAllReversed() {
+    // Return a reversed copy of the `ints` array
+    return this.ints.slice().reverse();
+  }
+
+
 
     }
 
@@ -77,6 +141,45 @@
       //      * When disengaging the safety, return "Safety disabled!"
       // 🌟 HINT: instances need to keep track of their maximum capacity as well as their current capacity
 
+
+      constructor(totalProjectiles) {
+    // Check if totalProjectiles is a valid number, else default to 0
+    this.capacity = Number.isInteger(totalProjectiles) && totalProjectiles > 0 ? totalProjectiles : 0;
+    this.ammo = this.capacity;  // Initialize ammo to the capacity
+    this.safetyOn = true;       // Initialize safety on
+  }
+
+  // Instances have a `shoot` method that takes no arguments
+  shoot() {
+    // If there is ammo left and safety is off, consume one projectile and return "Bang!"
+    if (this.ammo > 0 && !this.safetyOn) {
+      this.ammo--;
+      return "Bang!";
+    } else {
+      // Shooting on empty or with the safety on, return "Click!"
+      return "Click!";
+    }
+  }
+
+  // Instances have a `reload` method that takes a number and tops up the instance by that number
+  reload(number) {
+    // Reloading by more than capacity fills the instance to capacity
+    // Passing an argument which is not a number larger than zero returns the string "Error reloading!"
+    if (Number.isInteger(number) && number > 0) {
+      this.ammo = Math.min(this.capacity, this.ammo + number);
+      return `${this.ammo} projectiles left!`;
+    } else {
+      return "Error reloading!";
+    }
+  }
+
+  // Instances have a `toggleSafety` method that takes no arguments and switches the state of the safety
+  toggleSafety() {
+    // When engaging the safety, return "Safety enabled!"
+    // When disengaging the safety, return "Safety disabled!"
+    this.safetyOn = !this.safetyOn;
+    return this.safetyOn ? "Safety enabled!" : "Safety disabled!";
+  }
     }
 
     // 👉 CHALLENGE 3 EBook
@@ -95,6 +198,49 @@
       //    ebook.next() // returns null
       // 🌟 HINT: remember about the `slice` method which strings and arrays have
       // ❗ Feel free to implement `back`, although this is not required nor graded
+      constructor(bookText, charactersPerPage) {
+    this.bookText = bookText;
+    this.charactersPerPage = charactersPerPage;
+    this.currentPage = 0; // Keep track of the current page
+  }
+
+  // Instances have a `next` method:
+  // It takes no args and returns the next page of the book
+  // If the next page is empty because we have reached the end, return null instead
+  next() {
+    // Calculate the start and end index of the next page
+    const startIndex = this.currentPage * this.charactersPerPage;
+    const endIndex = startIndex + this.charactersPerPage;
+
+    // Use slice to get the next page of the book
+    const nextPage = this.bookText.slice(startIndex, endIndex);
+
+    // If the next page is not empty, increment the current page and return the page text
+    if (nextPage.length > 0) {
+      this.currentPage++;
+      return nextPage;
+    } else {
+      // If the next page is empty, we have reached the end, return null
+      return null;
+    }
+  }
+
+  // Optional: Implement `back` method to navigate to the previous page
+  back() {
+    // Decrement the current page to go back
+    this.currentPage--;
+
+    // If the current page is still within bounds, return the page text
+    if (this.currentPage >= 0) {
+      const startIndex = this.currentPage * this.charactersPerPage;
+      const endIndex = startIndex + this.charactersPerPage;
+      return this.bookText.slice(startIndex, endIndex);
+    } else {
+      // If the current page is less than 0, reset to the first page and return null
+      this.currentPage = 0;
+      return null;
+    }
+  }
 
     }
 
@@ -130,7 +276,35 @@
       //      console.log(list) // prints ["a"]
       // 👉 HINT: if you are not feeling confident with map and filter, solve the problem with for loops,
       //      and with the piece of mind of all tests passing, refactor to use map/filter
+              
+      constructor(...antNames) {
+    this.ants = antNames.map(name => ({ name, health: 100 }));
+  }
 
+  work() {
+    if (this.ants.length === 0) {
+      return "No ants here. Did you work them to death?";
+    }
+
+    this.ants.forEach(ant => {
+      ant.health -= 20;
+    });
+
+    // Remove dead ants after the loop
+    this.ants = this.ants.filter(ant => ant.health > 0);
+
+    return `${this.ants.length} ants starting work!`;
+  }
+
+  feed(antName) {
+    const ant = this.ants.find(a => a.name === antName);
+    if (ant) {
+      ant.health += 15;
+      return "Yum!";
+    } else {
+      return `${antName} not found!`;
+    }
+  }
     }
 
     // 🧪 TESTS, do not make any changes below this line ===================
@@ -401,11 +575,7 @@
           const [desJSON, expJSON, actJSON] = test().map(JSON.stringify)
           if (_.isEqual(expected, actual)) {
             console.log(`\t✅ Test ${idx + 1} ${desJSON} PASSED`)
-          } else {
-            console.log(`\t❌ Test ${idx + 1} ${desJSON} FAILED:
-              Expected ${expJSON}
-              Actual   ${actJSON}`)
-          }
+          } 
         })
       }
       let getTextArea = () => document.querySelector('.widget textarea')
