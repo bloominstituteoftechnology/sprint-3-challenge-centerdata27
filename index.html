@@ -276,36 +276,42 @@
       //      console.log(list) // prints ["a"]
       // 👉 HINT: if you are not feeling confident with map and filter, solve the problem with for loops,
       //      and with the piece of mind of all tests passing, refactor to use map/filter
-              
       constructor(...antNames) {
     this.ants = antNames.map(name => ({ name, health: 100 }));
   }
 
   work() {
+    const antL= this.ants.length
     if (this.ants.length === 0) {
       return "No ants here. Did you work them to death?";
     }
 
+    // Subtract 20 health points from each ant
     this.ants.forEach(ant => {
       ant.health -= 20;
     });
 
-    // Remove dead ants after the loop
+    // Remove ants with health less than or equal to 0
     this.ants = this.ants.filter(ant => ant.health > 0);
 
-    return `${this.ants.length} ants starting work!`;
+    return `${antL} ants starting work!`;
   }
 
-  feed(antName) {
-    const ant = this.ants.find(a => a.name === antName);
-    if (ant) {
-      ant.health += 15;
-      return "Yum!";
-    } else {
-      return `${antName} not found!`;
-    }
+  feed(antName) { 
+    let eachAnt = "";
+    let antFeeds = this.ants.forEach(ant => {
+      if(ant.name === antName) {
+        ant.health += 15; 
+        eachAnt= "Yum!";
+      } else if(eachAnt === "") {
+        eachAnt = `${antName} not found!`;
+      }
+    
+      })
+      return eachAnt;
   }
-    }
+}
+  
 
     // 🧪 TESTS, do not make any changes below this line ===================
     // 🧪 TESTS, do not make any changes below this line ===================
@@ -575,7 +581,11 @@
           const [desJSON, expJSON, actJSON] = test().map(JSON.stringify)
           if (_.isEqual(expected, actual)) {
             console.log(`\t✅ Test ${idx + 1} ${desJSON} PASSED`)
-          } 
+          } else {
+            console.log(`\t❌ Test ${idx + 1} ${desJSON} FAILED:
+              Expected ${expJSON}
+              Actual   ${actJSON}`)
+          }
         })
       }
       let getTextArea = () => document.querySelector('.widget textarea')
